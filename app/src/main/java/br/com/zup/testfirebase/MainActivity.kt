@@ -1,6 +1,7 @@
 package br.com.zup.testfirebase
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +35,23 @@ class MainActivity : AppCompatActivity() {
         auth = Firebase.auth
         getCurrentMessagingToken()
         crashButton()
+
+        intent?.run {
+            val keys = this.extras?.keySet()
+
+            if (!keys.isNullOrEmpty()) {
+
+                keys.forEach { key ->
+                    when (this.extras!![key]) {
+                        is Long -> Log.d(MyFirebaseMessagingService.TAG, "$key = ${this.getLongExtra(key, 0L)}")
+                        is Int -> Log.d(MyFirebaseMessagingService.TAG, "$key = ${this.getIntExtra(key, 0)}")
+                        is String -> Log.d(MyFirebaseMessagingService.TAG, "$key = ${this.getStringExtra(key)}")
+                        is Boolean -> Log.d(MyFirebaseMessagingService.TAG, "$key = ${this.getBooleanExtra(key, false)}")
+                        else -> Log.d(MyFirebaseMessagingService.TAG, "$key = ${this.getParcelableExtra<Bundle>(key)}")
+                    }
+                }
+            }
+        }
     }
 
     private fun crashButton(){
@@ -54,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     return@OnCompleteListener
                 }
                 val token = task.result
-                Log.d(MyFirebaseMessagingService.TAG, "Token: $token")
+                //Log.d(MyFirebaseMessagingService.TAG, "Token: $token")
                 Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
             }
         )
@@ -66,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser != null){
             //TODO usuário logado atualize a UI de acordo
-            Log.d(MyFirebaseMessagingService.TAG, "usuário logado")
+            //Log.d(MyFirebaseMessagingService.TAG, "usuário logado")
         }
 
         val user = Firebase.auth.currentUser
@@ -77,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             val emailVerified = user.isEmailVerified
             val uid = user.uid
         }
-        Log.d(MyFirebaseMessagingService.TAG, "user: $user")
+        //Log.d(MyFirebaseMessagingService.TAG, "user: $user")
 
 // Write a message to the database
         val database = FirebaseDatabase.getInstance()
@@ -89,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                 val value = dataSnapshot.value
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "Failed to read value.", error.toException())
+                //Log.d(TAG, "Failed to read value.", error.toException())
             }
         })
 

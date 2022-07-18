@@ -46,7 +46,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database'
+
     implementation 'com.google.firebase:firebase-messaging-ktx'
+
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.google.firebase:firebase-crashlytics'
     testImplementation 'junit:junit:4.13.2'
